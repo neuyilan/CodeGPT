@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
+	"github.com/appleboy/CodeGPT/webhook"
+	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
-
-	"github.com/appleboy/CodeGPT/cmd"
 )
 
 func withContextFunc(ctx context.Context, f func()) context.Context {
@@ -28,6 +29,6 @@ func withContextFunc(ctx context.Context, f func()) context.Context {
 }
 
 func main() {
-	ctx := withContextFunc(context.Background(), func() {})
-	cmd.Execute(ctx)
+	http.HandleFunc("/webhook", webhook.HandleWebhook)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
