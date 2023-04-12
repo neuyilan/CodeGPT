@@ -30,8 +30,9 @@ import (
 )
 
 const (
-	fetchPRFilesURL = "%s/repos/%s/%s/pulls/%d/files"
-	commentsURL     = "%s/repos/%s/%s/pulls/%d/commits"
+	fetchPRFilesURL   = "%s/repos/%s/%s/pulls/%d/files"
+	fetchCommitsURL   = "%s/repos/%s/%s/pulls/%d/commits"
+	submitCommentsURL = "%s/repos/%s/%s/pulls/%d/comments"
 )
 
 // github parameters
@@ -180,7 +181,7 @@ func fetchPRFiles(owner, repo string, prNumber int) ([]File, error) {
 func fetchPRCommitID(owner, repo string, prNumber int) (string, error) {
 	client := &http.Client{}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf(commentsURL, apiBaseurl, owner, repo, prNumber), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf(fetchCommitsURL, apiBaseurl, owner, repo, prNumber), nil)
 	if err != nil {
 		return "", err
 	}
@@ -316,7 +317,7 @@ func submitReviewComment(owner, repo string, prNumber int, commitID, filePath, c
 		return err
 	}
 
-	req, err := http.NewRequest("POST", fmt.Sprintf(commentsURL, apiBaseurl, owner, repo, prNumber), bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", fmt.Sprintf(submitCommentsURL, apiBaseurl, owner, repo, prNumber), bytes.NewBuffer(jsonData))
 	if err != nil {
 		log.Println("Error creating request:", err)
 		return err
