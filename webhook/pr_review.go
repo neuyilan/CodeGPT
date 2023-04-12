@@ -125,11 +125,10 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 }
 
 func initGithubParameter() {
-	apiBaseurl = viper.GetString("github.api_base_url")
-	token = viper.GetString("github.token")
-	owner = viper.GetString("github.owner")
-	repo = viper.GetString("github.repo")
-
+	apiBaseurl = viper.GetString("git.api_base_url")
+	token = viper.GetString("git.token")
+	owner = viper.GetString("git.owner")
+	repo = viper.GetString("git.repo")
 	log.Printf("apiBaseurl=%s, token=%s, owner=%s, repo=%s\n", apiBaseurl, token, owner, repo)
 	initFlag = true
 }
