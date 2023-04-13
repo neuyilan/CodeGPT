@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -74,7 +73,6 @@ var reviewCmd = &cobra.Command{
 
 		// Get summarize comment from diff datas
 		color.Cyan("We are trying to review code changes")
-		fmt.Println("11111111111111, ", cmd.Context())
 		resp, err := client.Completion(cmd.Context(), out)
 		if err != nil {
 			return err
