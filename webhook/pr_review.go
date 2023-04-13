@@ -30,9 +30,10 @@ import (
 )
 
 const (
-	fetchPRFilesURL   = "%s/repos/%s/%s/pulls/%d/files"
-	fetchCommitsURL   = "%s/repos/%s/%s/pulls/%d/commits"
-	submitCommentsURL = "%s/repos/%s/%s/pulls/%d/comments"
+	fetchPRFilesURL     = "%s/repos/%s/%s/pulls/%d/files"
+	fetchCommitsURL     = "%s/repos/%s/%s/pulls/%d/commits"
+	submitCommentsURL   = "%s/repos/%s/%s/pulls/%d/comments"
+	maxCodeCharacterNum = 500
 )
 
 // github parameters
@@ -227,17 +228,47 @@ func fetchPRCommitID(owner, repo string, prNumber int) (string, error) {
 
 func submitReview(owner, repo string, prNumber int, commitID string, files []File) {
 	for _, file := range files {
-		comment, err := getChatGPTComment(file.Patch)
-		if err != nil {
-			comment = fmt.Sprintf("Error generating comment for file %s: %v", file.Filename, err)
-			log.Printf("Error generating comment for file %s: %v\n", file.Filename, err)
+
+		patch := file.Patch
+
+		patchLines := strings.Split(patch, "\n")
+
+		var builder strings.Builder
+
+		for index, line := range patchLines {
+			if util.CountWords(builder.String()) > maxCodeCharacterNum {
+				log.Println("Code block is too long, submit review comment, file name=", file.Filename)
+				comment, err := getChatGPTComment(builder.String())
+				if err != nil {
+					comment = fmt.Sprintf("Error generating comment for file %s: %v", file.Filename, err)
+					log.Printf("Error generating comment for file %s: %v\n", file.Filename, err)
+				}
+				position := index
+				err = submitReviewComment(owner, repo, prNumber, commitID, file.Filename, comment, position)
+				if err != nil {
+					log.Printf("Error submitting review comment for file %s: %v\n", file.Filename, err)
+				} else {
+					log.Printf("Review comment submitted for file %s\n\n", file.Filename)
+				}
+				builder.Reset()
+			}
+			builder.WriteString(line)
 		}
-		position := getLastLinePosition(file.Patch)
-		err = submitReviewComment(owner, repo, prNumber, commitID, file.Filename, comment, position)
-		if err != nil {
-			log.Printf("Error submitting review comment for file %s: %v\n", file.Filename, err)
-		} else {
-			log.Printf("Review comment submitted for file %s\n\n", file.Filename)
+
+		if len(builder.String()) > 0 {
+			comment, err := getChatGPTComment(builder.String())
+			if err != nil {
+				comment = fmt.Sprintf("Error generating comment for file %s: %v", file.Filename, err)
+				log.Printf("Error generating comment for file %s: %v\n", file.Filename, err)
+			}
+			position := getLastLinePosition(file.Patch)
+			err = submitReviewComment(owner, repo, prNumber, commitID, file.Filename, comment, position)
+			if err != nil {
+				log.Printf("Error submitting review comment for file %s: %v\n", file.Filename, err)
+			} else {
+				log.Printf("Review comment submitted for file %s\n\n", file.Filename)
+			}
+			builder.Reset()
 		}
 	}
 }

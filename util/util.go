@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net"
 	"os/exec"
+	"strings"
 )
 
 // IsCommandAvailable check command exits.
@@ -29,4 +30,8 @@ func GetClientIp() (string, error) {
 	}
 
 	return "", errors.New("can not find the client ip addresses")
+}
+
+func CountWords(s string) int {
+	return len(strings.Fields(s))
 }

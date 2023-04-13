@@ -62,6 +62,8 @@ func init() {
 	_ = viper.BindPFlag("git.token", configCmd.PersistentFlags().Lookup("token"))
 	_ = viper.BindPFlag("git.owner", configCmd.PersistentFlags().Lookup("owner"))
 	_ = viper.BindPFlag("git.repo", configCmd.PersistentFlags().Lookup("repo"))
+	_ = viper.BindPFlag("server.ip", configCmd.PersistentFlags().Lookup("ip"))
+	_ = viper.BindPFlag("server.port", configCmd.PersistentFlags().Lookup("port"))
 }
 
 var configCmd = &cobra.Command{

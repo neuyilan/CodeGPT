@@ -16,25 +16,20 @@ package main
 import (
 	"fmt"
 	"github.com/appleboy/CodeGPT/cmd"
-	"github.com/appleboy/CodeGPT/util"
 	"github.com/appleboy/CodeGPT/webhook"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
 )
 
-const (
-	port = "8080"
-)
-
 func main() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
-	ip, err := util.GetClientIp()
-	if err != nil {
-		log.Println("Can not get client ip address.")
-	}
 	cmd.InitConfig()
 	http.HandleFunc("/payload", webhook.HandleWebhook)
+	ip := viper.GetString("server.ip")
+	port := viper.GetString("server.port")
 	var address = fmt.Sprintf("%s:%s", ip, port)
 	fmt.Println("Listening for GitHub Webhooks on", address)
 	http.ListenAndServe(address, nil)
+
 }
