@@ -27,6 +27,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -44,6 +45,10 @@ var (
 	repo       string
 
 	initFlag = false
+)
+
+var (
+	sleepTimeSecond int
 )
 
 type PullRequestEvent struct {
@@ -131,6 +136,7 @@ func initGithubParameter() {
 	token = viper.GetString("git.token")
 	owner = viper.GetString("git.owner")
 	repo = viper.GetString("git.repo")
+	sleepTimeSecond = viper.GetInt("server.sleep_time_second")
 	log.Printf("apiBaseurl=%s, token=%s, owner=%s, repo=%s\n", apiBaseurl, token, owner, repo)
 	initFlag = true
 }
@@ -251,6 +257,8 @@ func submitReview(owner, repo string, prNumber int, commitID string, files []Fil
 					log.Printf("Review comment submitted for file %s\n\n", file.Filename)
 				}
 				builder.Reset()
+				log.Printf("Sleep %d seconds to avoid GitHub API rate limit\n", sleepTimeSecond)
+				time.Sleep(time.Duration(sleepTimeSecond) * time.Second)
 			}
 			builder.WriteString(line)
 		}
@@ -268,6 +276,8 @@ func submitReview(owner, repo string, prNumber int, commitID string, files []Fil
 			} else {
 				log.Printf("Review comment submitted for file %s\n\n", file.Filename)
 			}
+			log.Printf("Sleep %d seconds to avoid GitHub API rate limit\n", sleepTimeSecond)
+			time.Sleep(time.Duration(sleepTimeSecond) * time.Second)
 			builder.Reset()
 		}
 	}

@@ -64,6 +64,7 @@ func init() {
 	_ = viper.BindPFlag("git.repo", configCmd.PersistentFlags().Lookup("repo"))
 	_ = viper.BindPFlag("server.ip", configCmd.PersistentFlags().Lookup("ip"))
 	_ = viper.BindPFlag("server.port", configCmd.PersistentFlags().Lookup("port"))
+	_ = viper.BindPFlag("server.sleep_time_second", configCmd.PersistentFlags().Lookup("sleep_time_second"))
 }
 
 var configCmd = &cobra.Command{
