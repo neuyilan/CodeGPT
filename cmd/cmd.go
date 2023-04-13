@@ -58,6 +58,7 @@ func InitConfig() {
 	} else {
 		// Find home directory.
 		home, err := os.UserHomeDir()
+		fmt.Println("home dir", home)
 		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".cobra" (without extension).
