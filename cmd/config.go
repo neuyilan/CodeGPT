@@ -58,6 +58,13 @@ func init() {
 	_ = viper.BindPFlag("git.exclude_list", configCmd.PersistentFlags().Lookup("exclude_list"))
 	_ = viper.BindPFlag("git.template_file", configCmd.PersistentFlags().Lookup("template_file"))
 	_ = viper.BindPFlag("git.template_string", configCmd.PersistentFlags().Lookup("template_string"))
+	_ = viper.BindPFlag("git.api_base_url", configCmd.PersistentFlags().Lookup("api_base_url"))
+	_ = viper.BindPFlag("git.token", configCmd.PersistentFlags().Lookup("token"))
+	_ = viper.BindPFlag("git.owner", configCmd.PersistentFlags().Lookup("owner"))
+	_ = viper.BindPFlag("git.repo", configCmd.PersistentFlags().Lookup("repo"))
+	_ = viper.BindPFlag("server.ip", configCmd.PersistentFlags().Lookup("ip"))
+	_ = viper.BindPFlag("server.port", configCmd.PersistentFlags().Lookup("port"))
+	_ = viper.BindPFlag("server.sleep_time_second", configCmd.PersistentFlags().Lookup("sleep_time_second"))
 }
 
 var configCmd = &cobra.Command{

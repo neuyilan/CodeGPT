@@ -1,0 +1,28 @@
+git:
+  diff_unified: 3
+  exclude_list: [ ]
+  template_file: ""
+  template_string: ""
+  api_base_url: "https://api.github.com"
+  token: "your github token"
+openai:
+  api_key: "your openai api key"
+  base_url: https://api.openai.com/v1
+  max_tokens: 1500
+  model: gpt-3.5-turbo
+  org_id: ""
+  proxy: "the proxy of openai api"
+  socks: ""
+  temperature: "0.7"
+  timeout: 60s
+output:
+  file: ""
+  lang: en
+server:
+  # "the server ip which you want to bind when running the webhook server"
+  ip: 127.0.0.1
+  # "the port which you want to bind when running the webhook server"
+  port: 8099
+  # the time to sleep when request to the openai to get the comment message each time,
+  # its main purpose is to limit the openai request rate, unit: second
+  sleep_time_second: 40
