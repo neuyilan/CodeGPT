@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	openai "github.com/sashabaranov/go-openai"
 	"golang.org/x/net/proxy"
@@ -175,7 +176,10 @@ func New(opts ...Option) (*Client, error) {
 	if cfg.proxyURL != "" {
 		proxy, _ := url.Parse(cfg.proxyURL)
 		httpClient.Transport = &http.Transport{
-			Proxy: http.ProxyURL(proxy),
+			Proxy:               http.ProxyURL(proxy),
+			MaxIdleConns:        100,
+			MaxIdleConnsPerHost: 100,
+			TLSHandshakeTimeout: 5 * time.Second,
 		}
 	} else if cfg.socksURL != "" {
 		dialer, err := proxy.SOCKS5("tcp", cfg.socksURL, nil, proxy.Direct)
@@ -183,10 +187,18 @@ func New(opts ...Option) (*Client, error) {
 			return nil, fmt.Errorf("can't connect to the proxy: %s", err)
 		}
 		httpClient.Transport = &http.Transport{
-			Dial: dialer.Dial,
+			Dial:                dialer.Dial,
+			MaxIdleConns:        100,
+			MaxIdleConnsPerHost: 100,
+			TLSHandshakeTimeout: 5 * time.Second,
+		}
+	} else {
+		httpClient.Transport = &http.Transport{
+			MaxIdleConns:        100,
+			MaxIdleConnsPerHost: 100,
+			TLSHandshakeTimeout: 5 * time.Second,
 		}
 	}
-
 	c.HTTPClient = httpClient
 	instance.client = openai.NewClientWithConfig(c)
 

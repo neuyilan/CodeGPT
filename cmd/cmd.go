@@ -31,7 +31,7 @@ const (
 )
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(InitConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.codegpt.yaml)")
 	rootCmd.AddCommand(versionCmd)
@@ -44,7 +44,7 @@ func init() {
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 }
 
-func initConfig() {
+func InitConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -58,6 +58,7 @@ func initConfig() {
 	} else {
 		// Find home directory.
 		home, err := os.UserHomeDir()
+		fmt.Println("home dir", home)
 		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".cobra" (without extension).
@@ -99,6 +100,7 @@ func initConfig() {
 			fmt.Fprintln(os.Stderr, err)
 		}
 	}
+	fmt.Println("Using config file:", viper.ConfigFileUsed())
 }
 
 func Execute(ctx context.Context) {
