@@ -16,6 +16,7 @@ const (
 	SummarizeTitleTemplate     = "summarize_title.tmpl"
 	ConventionalCommitTemplate = "conventional_commit.tmpl"
 	TranslationTemplate        = "translation.tmpl"
+	CodeAnalysisTemplate       = "analysis_code.tmpl"
 )
 
 func init() {
